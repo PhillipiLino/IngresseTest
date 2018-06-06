@@ -121,7 +121,6 @@ public class ShowsRecyclerAdapter extends RecyclerView.Adapter {
                 }
                 itemViewHolder.favoriteButton.setTag(!isFavorite);
                 preferences.edit().putBoolean(show.getName(), !isFavorite).apply();
-                Log.d("STAR", "FAVORITE");
             }
         });
 
