@@ -10,88 +10,71 @@
         android:id="@+id/item_card_view"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="0dp"
         android:layout_marginStart="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:background="@android:color/black">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorAccent"/>
-
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/black">
-
-                <ImageView
-                    android:id="@+id/item_background_image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:alpha="0.1"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/show_poster"
-                    android:layout_width="70dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/ic_no_image"
-                    android:background="#111111"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <TextView
-                    android:id="@+id/show_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Rick And Morty"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold|italic"
-                    app:layout_constraintStart_toEndOf="@+id/show_poster"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/show_genres"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Comedy, Adventure, Science-Fiction"
-                    android:textColor="@android:color/white"
-                    app:layout_constraintStart_toStartOf="@+id/show_title"
-                    app:layout_constraintTop_toBottomOf="@+id/show_title" />
-
-                <ImageButton
-                    android:id="@+id/button_favorite"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_star_not_favorite"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-            </android.support.constraint.ConstraintLayout>
+                android:id="@+id/item_background_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:alpha="0.1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorAccent"/>
+                android:id="@+id/show_poster"
+                android:layout_width="70dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_no_image"
+                android:background="#111111"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/show_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Rick And Morty"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintStart_toEndOf="@+id/show_poster"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/show_genres"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Comedy, Adventure, Science-Fiction"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toStartOf="@+id/show_title"
+                app:layout_constraintTop_toBottomOf="@+id/show_title" />
+
+            <ImageButton
+                android:id="@+id/button_favorite"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_star_not_favorite"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
 
 
 
