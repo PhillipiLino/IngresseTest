@@ -1,14 +1,35 @@
 package com.app.phillipi.ingressetest.Objects;
 
-import org.json.JSONObject;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Show {
+public class Show implements Parcelable {
 
     private String name;
     private String[] genres;
     private ShowPosters image;
-    private String sumary;
+    private String summary;
     private String premiered;
+
+    protected Show(Parcel in) {
+        name = in.readString();
+        genres = in.createStringArray();
+        image = in.readParcelable(ShowPosters.class.getClassLoader());
+        summary = in.readString();
+        premiered = in.readString();
+    }
+
+    public static final Creator<Show> CREATOR = new Creator<Show>() {
+        @Override
+        public Show createFromParcel(Parcel in) {
+            return new Show(in);
+        }
+
+        @Override
+        public Show[] newArray(int size) {
+            return new Show[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -34,12 +55,12 @@ public class Show {
         this.image = image;
     }
 
-    public String getSumary() {
-        return sumary;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setSumary(String sumary) {
-        this.sumary = sumary;
+    public void setSummary(String sumary) {
+        this.summary = sumary;
     }
 
     public String getPremiered() {
@@ -48,5 +69,19 @@ public class Show {
 
     public void setPremiered(String premiered) {
         this.premiered = premiered;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeStringArray(genres);
+        parcel.writeParcelable(image, i);
+        parcel.writeString(summary);
+        parcel.writeString(premiered);
     }
 }
