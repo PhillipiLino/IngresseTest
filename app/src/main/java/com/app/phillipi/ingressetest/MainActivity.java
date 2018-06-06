@@ -2,6 +2,7 @@ package com.app.phillipi.ingressetest;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -72,8 +73,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<CatalogItem>> call, retrofit2.Response<List<CatalogItem>> response) {
                 List<CatalogItem> list = response.body();
-                recyclerView.setAdapter(new ShowsRecyclerAdapter(MainActivity.this, list));
+
+                ShowsRecyclerAdapter adapter =  new ShowsRecyclerAdapter(MainActivity.this, list);
+                adapter.SetOnItemClickListener(new ShowsRecyclerAdapter.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(View v, int position) {
+                        CardView cv = v.findViewById(R.id.item_card_view);
+
+                        CatalogItem cardItem = (CatalogItem) cv.getTag();
+
+                        Log.d("Show", cardItem.getShow().getName());
+
+                    }
+                });
+
+                recyclerView.setAdapter(adapter);
             }
+
 
             @Override
             public void onFailure(Call<List<CatalogItem>> call, Throwable t) {
