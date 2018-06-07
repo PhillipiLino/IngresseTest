@@ -1,32 +1,37 @@
-package com.app.phillipi.ingressetest;
+package com.app.phillipi.ingressetest.Main;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import com.app.phillipi.ingressetest.Objects.CatalogItem;
+import com.app.phillipi.ingressetest.Objects.Show;
+import com.app.phillipi.ingressetest.R;
+import com.app.phillipi.ingressetest.ShowDetails.ShowDetailsActivity;
+import com.app.phillipi.ingressetest.ShowsRecyclerAdapter;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Retrofit;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainView{
 
     RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        presenter = new MainPresenterImpl(this, new GetShowsServiceImpl());
+
+        progressBar = findViewById(R.id.progressBar);
 
         recyclerView = findViewById(R.id.catalog_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -37,49 +42,41 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                retrofitTest(editTextSearch.getText().toString());
+                presenter.doTheSearch(editTextSearch.getText().toString());
             }
         });
 
     }
 
-    private void retrofitTest(String search){
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+    }
 
-        Retrofit retrofit = RetrofitClient.getClient(AppServices.BASE_URL);
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
 
-        AppServices client = retrofit.create(AppServices.class);
-        Call<List<CatalogItem>> call = client.getShows(search);
-
-        call.enqueue(new Callback<List<CatalogItem>>() {
+    @Override
+    public void setItems(List<CatalogItem> items) {
+        ShowsRecyclerAdapter adapter =  new ShowsRecyclerAdapter(MainActivity.this, items);
+        adapter.SetOnItemClickListener(new ShowsRecyclerAdapter.OnItemClickListener() {
             @Override
-            public void onResponse(Call<List<CatalogItem>> call, retrofit2.Response<List<CatalogItem>> response) {
-                List<CatalogItem> list = response.body();
-
-                ShowsRecyclerAdapter adapter =  new ShowsRecyclerAdapter(MainActivity.this, list);
-                adapter.SetOnItemClickListener(new ShowsRecyclerAdapter.OnItemClickListener() {
-
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        CardView cv = v.findViewById(R.id.item_card_view);
-
-                        CatalogItem cardItem = (CatalogItem) cv.getTag();
-
-                        Intent nextActivity = new Intent(MainActivity.this, ShowDetailsActivity.class);
-                        nextActivity.putExtra("show", cardItem.getShow());
-                        startActivity(nextActivity);
-
-                    }
-                });
-
-                recyclerView.setAdapter(adapter);
-            }
-
-
-            @Override
-            public void onFailure(Call<List<CatalogItem>> call, Throwable t) {
-                Log.e("ERROR", t.getMessage());
+            public void onItemClick(View v, int position) {
+                presenter.onItemClicked(v);
             }
         });
 
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void changeActivity(Show show) {
+        Intent nextActivity = new Intent(MainActivity.this, ShowDetailsActivity.class);
+        nextActivity.putExtra("show", show);
+        startActivity(nextActivity);
     }
 }

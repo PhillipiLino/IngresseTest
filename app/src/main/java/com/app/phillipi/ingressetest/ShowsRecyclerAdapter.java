@@ -1,22 +1,21 @@
 package com.app.phillipi.ingressetest;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.phillipi.ingressetest.Objects.CatalogItem;
 import com.app.phillipi.ingressetest.Objects.Show;
+import com.app.phillipi.ingressetest.Objects.StarButton;
+import com.app.phillipi.ingressetest.ShowDetails.ShowDetailsPresenter;
+import com.app.phillipi.ingressetest.ShowDetails.ShowDetailsPresenterImpl;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -30,12 +29,14 @@ public class ShowsRecyclerAdapter extends RecyclerView.Adapter {
     private List<CatalogItem> items;
     private Context context;
 
-    SharedPreferences preferences;
+    ShowDetailsPresenter presenter;
 
     public ShowsRecyclerAdapter(Context context, List<CatalogItem> items){
         this.context = context;
         this.items = items;
-        this.preferences = context.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+
+        presenter = new ShowDetailsPresenterImpl();
+
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -44,7 +45,7 @@ public class ShowsRecyclerAdapter extends RecyclerView.Adapter {
         private TextView showTitle;
         private TextView showGenres;
         private CardView cardView;
-        private ImageButton favoriteButton;
+        private StarButton favoriteButton;
         private ImageView itemBackground;
 
         public ItemViewHolder(View itemView) {
@@ -84,48 +85,38 @@ public class ShowsRecyclerAdapter extends RecyclerView.Adapter {
         itemViewHolder.showGenres.setText(genres);
 
         if (show.getImage() != null){
-            Glide.with(context)
-                    .load(show.getImage().getMedium())
-                    .apply(
-                            RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE)
-                                    .centerCrop()
-                    )
-                    .into(itemViewHolder.showPoster);
-
-            Glide.with(context)
-                    .load(show.getImage().getMedium())
-                    .apply(
-                            RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE)
-                                    .centerCrop()
-                    )
-                    .into(itemViewHolder.itemBackground);
+            setImage(itemViewHolder.showPoster, show.getImage().getMedium());
+            setImage(itemViewHolder.itemBackground, show.getImage().getMedium());
         }
 
-        boolean isFavorite = preferences.getBoolean(show.getName(), false);
-        itemViewHolder.favoriteButton.setTag(isFavorite);
-
-        if(isFavorite){
-            itemViewHolder.favoriteButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_favorite));
-        } else {
-            itemViewHolder.favoriteButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_not_favorite));
-        }
+        boolean isFavorite = presenter.getDataInPreferences(context, show.getName());
+        itemViewHolder.favoriteButton.setFavorite(isFavorite);
+        itemViewHolder.favoriteButton.changeStarColor();
 
         itemViewHolder.favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isFavorite = (boolean) itemViewHolder.favoriteButton.getTag();
-                if(isFavorite){
-                    itemViewHolder.favoriteButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_not_favorite));
-                } else {
-                    itemViewHolder.favoriteButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_favorite));
-                }
-                itemViewHolder.favoriteButton.setTag(!isFavorite);
-                preferences.edit().putBoolean(show.getName(), !isFavorite).apply();
+
+                boolean isFavorite = itemViewHolder.favoriteButton.isFavorite();
+
+                itemViewHolder.favoriteButton.setFavorite(!isFavorite);
+                itemViewHolder.favoriteButton.changeStarColor();
+                presenter.saveFavoriteShowInPreferences(context, show.getName(), !isFavorite);
             }
         });
 
         itemViewHolder.cardView.setTag(items.get(position));
 
+    }
+
+    public void setImage(ImageView imageView, String url){
+        Glide.with(context)
+                .load(url)
+                .apply(
+                        RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE)
+                                .centerCrop()
+                )
+                .into(imageView);
     }
 
     public interface OnItemClickListener {
