@@ -1,15 +1,11 @@
 package com.app.phillipi.ingressetest;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,14 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.phillipi.ingressetest.Objects.Show;
+import com.app.phillipi.ingressetest.Objects.StarButton;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -36,13 +31,18 @@ import com.bumptech.glide.request.target.Target;
 
 public class ShowDetailsActivity extends AppCompatActivity {
 
-    private ImageButton favoriteButton;
-    private SharedPreferences preferences;
+    Interfaces.PresenterImplementation presenter;
+
+    private StarButton favoriteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_details);
+
+        if(presenter == null){
+            presenter = new Presenter();
+        }
 
         final Show currentShow = getIntent().getParcelableExtra("show");
 
@@ -131,27 +131,18 @@ public class ShowDetailsActivity extends AppCompatActivity {
         });
 
         favoriteButton = findViewById(R.id.button_favorite);
-        preferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
-        boolean isFavorite = preferences.getBoolean(currentShow.getName(), false);
-        favoriteButton.setTag(isFavorite);
-
-        if(isFavorite){
-            favoriteButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star_favorite));
-        } else {
-            favoriteButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star_not_favorite));
-        }
+        boolean isFavorite = presenter.getDataInPreferences(ShowDetailsActivity.this, currentShow.getName());
+        favoriteButton.setFavorite(isFavorite);
+        favoriteButton.changeStarColor();
 
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isFavorite = (boolean) favoriteButton.getTag();
-                if(isFavorite){
-                    favoriteButton.setImageDrawable(ContextCompat.getDrawable(ShowDetailsActivity.this, R.drawable.ic_star_not_favorite));
-                } else {
-                    favoriteButton.setImageDrawable(ContextCompat.getDrawable(ShowDetailsActivity.this, R.drawable.ic_star_favorite));
-                }
-                favoriteButton.setTag(!isFavorite);
-                preferences.edit().putBoolean(currentShow.getName(), !isFavorite).apply();
+                boolean isFavorite = favoriteButton.isFavorite();
+
+                favoriteButton.setFavorite(!isFavorite);
+                favoriteButton.changeStarColor();
+                presenter.saveFavoriteShowInPreferences(ShowDetailsActivity.this, currentShow.getName(), !isFavorite);
             }
         });
     }

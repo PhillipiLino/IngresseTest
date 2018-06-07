@@ -12,19 +12,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.app.phillipi.ingressetest.Objects.CatalogItem;
-import com.app.phillipi.ingressetest.Objects.Show;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,26 +41,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     private void retrofitTest(String search){
 
-        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .build();
+        Retrofit retrofit = RetrofitClient.getClient(AppServices.BASE_URL);
 
-        Retrofit.Builder builder =
-                new Retrofit.Builder()
-                        .baseUrl("http://api.tvmaze.com/search/")
-                        .addConverterFactory(
-                                GsonConverterFactory.create()
-                        );
-
-        Retrofit retrofit =
-                builder.client(okHttpClient).build();
-
-
-        AppClient client = retrofit.create(AppClient.class);
+        AppServices client = retrofit.create(AppServices.class);
         Call<List<CatalogItem>> call = client.getShows(search);
 
         call.enqueue(new Callback<List<CatalogItem>>() {

@@ -64,7 +64,7 @@
                 app:layout_constraintStart_toStartOf="@+id/show_title"
                 app:layout_constraintTop_toBottomOf="@+id/show_title" />
 
-            <ImageButton
+            <com.app.phillipi.ingressetest.Objects.StarButton
                 android:id="@+id/button_favorite"
                 android:layout_width="50dp"
                 android:layout_height="50dp"

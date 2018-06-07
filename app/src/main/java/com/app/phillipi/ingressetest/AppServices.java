@@ -13,6 +13,7 @@ import retrofit2.http.Query;
 
 public interface AppClient {
 
+    public static final String BASE_URL = "http://api.tvmaze.com/search/";
     @GET("shows")
     Call<List<CatalogItem>> getShows(@Query("q") String search);
 }
