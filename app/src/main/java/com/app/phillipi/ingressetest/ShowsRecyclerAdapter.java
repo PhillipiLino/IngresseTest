@@ -87,6 +87,9 @@ public class ShowsRecyclerAdapter extends RecyclerView.Adapter {
         if (show.getImage() != null){
             setImage(itemViewHolder.showPoster, show.getImage().getMedium());
             setImage(itemViewHolder.itemBackground, show.getImage().getMedium());
+        } else {
+            itemViewHolder.showPoster.setImageDrawable(context.getResources()
+                    .getDrawable(R.drawable.ic_no_image));
         }
 
         boolean isFavorite = presenter.getDataInPreferences(context, show.getName());

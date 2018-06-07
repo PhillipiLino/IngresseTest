@@ -17,8 +17,10 @@ public class ShowDetailsPresenterImpl implements ShowDetailsPresenter {
 
     @Override
     public void saveFavoriteShowInPreferences(Context context, String show, boolean isFavorite) {
-        SharedPreferences preferences = context.getSharedPreferences("DATA", Context.MODE_PRIVATE);
-        preferences.edit().putBoolean(show, isFavorite).apply();
+        if(show != null){
+            SharedPreferences preferences = context.getSharedPreferences("DATA", Context.MODE_PRIVATE);
+            preferences.edit().putBoolean(show, isFavorite).apply();
+        }
     }
 
     @Override

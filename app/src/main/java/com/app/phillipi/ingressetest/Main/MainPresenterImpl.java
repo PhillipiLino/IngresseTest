@@ -28,18 +28,23 @@ public class MainPresenterImpl implements MainPresenter, GetShowsService.OnFinis
 
     @Override
     public void doTheSearch(String search) {
-        if (mainView != null) {
-            mainView.showProgress();
+
+        if(search != null && !search.isEmpty() && search.trim().length() != 0){
+            if (mainView != null) {
+                mainView.showProgress();
+            }
+            getShowsService.findItems(this, search);
         }
 
-        getShowsService.findItems(this, search);
     }
 
     @Override
     public void onItemClicked(View v) {
-        CardView cv = v.findViewById(R.id.item_card_view);
-        CatalogItem cardItem = (CatalogItem) cv.getTag();
-        mainView.changeActivity(cardItem.getShow());
+        if (v != null){
+            CardView cv = v.findViewById(R.id.item_card_view);
+            CatalogItem cardItem = (CatalogItem) cv.getTag();
+            mainView.changeActivity(cardItem.getShow());
+        }
     }
 
 }
